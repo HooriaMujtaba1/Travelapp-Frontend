@@ -92,7 +92,5 @@ python manage.py runserver
 
 Hooria Mujtaba
 
-🔗 [hooriamughal275@gmail.com]
-
 🔗 [GitHub](https://github.com/HooriaMujtaba1)
 

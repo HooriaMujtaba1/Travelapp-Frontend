@@ -85,6 +85,8 @@ python manage.py createsuperuser
 # Run development server
 python manage.py runserver
 
+```
+---
 
 ## 🙋‍♀️ Author
 

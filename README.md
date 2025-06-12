@@ -84,3 +84,13 @@ python manage.py createsuperuser
 
 # Run development server
 python manage.py runserver
+
+
+## 🙋‍♀️ Author
+
+Hooria Mujtaba
+
+🔗 [Email](hooriamughal275@gmail.com)
+
+🔗 [GitHub](https://github.com/HooriaMujtaba1)
+

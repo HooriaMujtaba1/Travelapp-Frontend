@@ -1,5 +1,3 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/pages/api-reference/create-next-app).
-
 ## Getting Started
 
 First, run the development server:
@@ -26,15 +24,100 @@ This project uses [`next/font`](https://nextjs.org/docs/pages/building-your-appl
 
 ## Learn More
 
-To learn more about Next.js, take a look at the following resources:
+# ✈️ Travel App – Listings & Bookings API
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn-pages-router) - an interactive Next.js tutorial.
+A Django REST Framework-based API to manage **listings** and **bookings**, including user authentication, media uploads, and email-based password reset functionality.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 🚀 Features
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/pages/building-your-application/deploying) for more details.
+- 🔐 User Registration & Login
+- 📅 Book Listings by Date Range
+- 📩 Password Reset via Email
+- 🖼️ Media File Uploads for Listings
+- 🛠️ Admin Dashboard
+- ⚙️ Clean REST API built with Django REST Framework
+- 🏘️ Create/View/ Listings
+
+---
+
+## 🔗 API Endpoints
+
+Here are some of the key endpoints you can interact with:
+
+### 📄 Listings
+
+| Method | Endpoint                   | Description                    |
+|--------|----------------------------|--------------------------------|
+| GET    | `/api/listings/`           | Get all listings               |
+| GET    | `/api/listings/<id>/`      | Retrieve a single listing      |
+| POST   | `/admin/listings/`         | Create a new listing           |
+
+### 📝 Bookings
+
+| Method | Endpoint                   | Description                    |
+|--------|----------------------------|--------------------------------|
+| GET    | `/api/bookings/`           | View all bookings              |
+| POST   | `/api/bookings/`           | Create a booking               |
+
+### 👤 User Authentication
+
+| Method | Endpoint                      | Description                    |
+|--------|-------------------------------|--------------------------------|
+| POST   | `/api/auth/register/`         | Register a new user            |
+| POST   | `/api/token/`                 | Login and receive token        |
+| POST   | `/api/auth/logout/`           | Logout and invalidate token    |
+
+### 🔑 Password Reset (via email)
+
+| Method | Endpoint                                  | Description                          |
+|--------|-------------------------------------------|--------------------------------------|
+| POST   | `/api/password_reset/`                    | Request a password reset email       |
+| POST   | `/api/password_reset/confirm/`            | Confirm and set a new password       |
+
+---
+
+## 🧪 Setup Instructions
+
+### ✅ Prerequisites
+
+- Python 3.10+
+- Git
+- Virtual environment (recommended)
+- Django & DRF installed
+
+---
+
+### 📦 Installation
+
+```bash
+# Clone the repository
+git clone https://github.com/HooriaMujtaba1/travel-app.git
+cd listings_project
+
+# Create virtual environment
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+
+# Apply migrations
+python manage.py makemigrations
+python manage.py migrate
+
+# Create superuser (for admin access)
+python manage.py createsuperuser
+
+# Run development server
+python manage.py runserver
+
+```
+---
+
+## 🙋‍♀️ Author
+
+Hooria Mujtaba
+
+🔗 [GitHub](https://github.com/HooriaMujtaba1)
+
+>>>>>>> 9479cba62ece9ff5243112dc6eef656e6eb78076

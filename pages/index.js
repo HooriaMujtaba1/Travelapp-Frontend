@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
 import { getAllListings } from '../services/listing';
+import Image from 'next/image';  // Import the Image component from Next.js
+import Link from 'next/link';    // Import Link for client-side routing
 
 export default function Home() {
   const [listings, setListings] = useState([]);
@@ -14,7 +16,7 @@ export default function Home() {
       })
       .catch((err) => {
         console.error(err);
-        setError('Failed, until Logged in.');
+        setError('Failed, until logged in.');
         setLoading(false);
       });
   }, []);
@@ -37,37 +39,38 @@ export default function Home() {
             key={item.id}
             className="bg-white rounded-lg overflow-hidden shadow-md border border-gray-200"
           >
+            {/* Use Next.js Image component for optimization */}
             {item.images?.[0] && (
-              <img
+              <Image
                 src={item.images[0].image}
-                alt={item.title}
+                alt={item.name}
+                width={500}  // Set an appropriate width
+                height={300} // Set an appropriate height
                 className="w-full h-48 object-cover"
               />
             )}
             <div className="p-4">
               <h2 className="text-xl font-semibold text-blue-600 mb-2">{item.name}</h2>
               <p className="text-gray-700 mb-4">
-                {item.description?.slice(0, 100)} A tour place, also known as a tourist
-                attraction, is a location that people visit for leisure, recreation, or cultural
-                experiences. A tour place, also known as a tourist
-                attraction, is a location that people visit for leisure, recreation or 
-                experiences.               
+                {item.description?.slice(0, 100)} A tour place, also known as a tourist attraction, is a location that people
+            visit for leisure, recreation, or cultural experiences. These places can be
+            natural wonders like mountains, beaches, or forests, or they can be
+            historical sites, cultural landmarks, or entertainment venues. 
+             {/* Truncate the description */}
               </p>
 
               <div className="flex flex-wrap gap-2">
-                <a
-                  href={`/bookings`}
-                  className="inline-block bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition"
-                >
-                  Book Now
-                </a>
+                <Link href="/bookings">
+                  <span className="inline-block bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition">
+                    Book Now
+                  </span>
+                </Link>
 
-                <a
-                  href={`/listings/${item.id}`}
-                  className="inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
-                >
-                  View Details
-                </a>
+                <Link href={`/listings/${item.id}`}>
+                  <span className="inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">
+                    View Details
+                  </span>
+                </Link>
               </div>
             </div>
           </div>

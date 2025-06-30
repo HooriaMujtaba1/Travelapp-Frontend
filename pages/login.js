@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { login } from '../services/auth';
 import { useRouter } from 'next/router';
 import Cookies from 'js-cookie';
+import Link from 'next/link'; // Import Link for internal navigation
 
 export default function LoginPage() {
   const [username, setUsername] = useState('');
@@ -47,7 +48,6 @@ export default function LoginPage() {
           required
         />
 
-
         <button
           type="submit"
           className="w-full py-2 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 transition"
@@ -55,14 +55,11 @@ export default function LoginPage() {
           Sign In
         </button>
 
-        {/* 🔗 Forgot password link */}
+        {/* Forgot password link using Link component from Next.js */}
         <div className="text-right">
-          <a
-            href="/forgot-password"
-            className="text-sm text-blue-500 hover:underline"
-          >
+          <Link href="/forgot-password" className="text-sm text-blue-500 hover:underline">
             Forgot password?
-          </a>
+          </Link>
         </div>
       </form>
     </div>

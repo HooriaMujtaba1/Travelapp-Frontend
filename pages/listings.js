@@ -1,40 +1,81 @@
-// pages/listings.js
-import { useEffect, useState } from 'react';
-import { getAllListings } from '../services/listing';
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/router';
+import Link from 'next/link';
+import Image from 'next/image'; // Import Image for optimized image handling
 
-export default function ListingsPage() {
-  const [listings, setListings] = useState([]);
+export default function ListingDetail() {
+  const router = useRouter();
+  const { id } = router.query;
 
+  const [listing, setListing] = useState(null);
+
+  // Fetch the listing data once the id is available
   useEffect(() => {
-    getAllListings()
-      .then(setListings)
-      .catch((err) => console.error('Error:', err));
-  }, []);
+    if (!id) return;
+
+    const fetchListing = async () => {
+      try {
+        const response = await fetch(`/api/listing/${id}`);
+        const data = await response.json();
+        setListing(data);
+      } catch (err) {
+        console.error('Error fetching listing data:', err);
+      }
+    };
+
+    fetchListing();
+  }, [id]);
+
+  // Handle loading state
+  if (!listing) return <p className="p-8 text-center text-gray-600">Loading...</p>;
+
+  // Ensure location_url is always valid
+  const locationUrl = listing.location_url || '/'; // Fallback to '/' if undefined
 
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold mb-4">All Listings</h1>
+    <div className="min-h-screen bg-blue-100 p-6 text-gray-800">
+      <div className="max-w-4xl mx-auto space-y-6">
+        {/* Listing Info */}
+        <div className="bg-white rounded-lg shadow-md border border-gray-200 p-6">
+          <h1 className="text-3xl font-bold mb-4 text-blue-600">{listing.name}</h1>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-        {listings.map((listing) => (
-          <div key={listing.id} className="border p-4 rounded shadow">
-            <h2 className="text-lg font-semibold mb-2">{listing.name}</h2>
-            <a href={listing.location_url} target="_blank" className="text-blue-600 underline">
-              View on Google Maps
-            </a>
+          {/* External Link to Google Maps */}
+          {locationUrl !== '/' ? (
+            <Link href={locationUrl}>
+              <span
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-600 underline mb-6 inline-block"
+              >
+                View on Google Maps
+              </span>
+            </Link>
+          ) : (
+            <p className="text-red-600">Location URL not available</p>
+          )}
 
-            <div className="mt-3 space-y-2">
-              {listing.images.map((img) => (
-                <img
-                  key={img.id}
-                  src={img.image}
-                  alt="Listing"
-                  className="w-full h-40 object-cover rounded"
-                />
-              ))}
-            </div>
+          <div className="space-y-4 mb-6">
+            {listing.images?.map((img) => (
+              <Image
+                key={img.id}
+                src={img.image}
+                alt={listing.name}
+                width={500}  // Set an appropriate width
+                height={300} // Set an appropriate height
+                className="w-full h-60 object-cover rounded"
+              />
+            ))}
           </div>
-        ))}
+
+          <p className="text-gray-700 leading-relaxed">
+            A tour place, also known as a tourist attraction, is a location that people
+            visit for leisure, recreation, or cultural experiences. These places can be
+            natural wonders like mountains, beaches, or forests, or they can be
+            historical sites, cultural landmarks, or entertainment venues. The purpose of
+            a tour place is to provide an engaging and enjoyable experience for visitors,
+            offering opportunities for sightseeing, exploration, and relaxation.
+          </p>
+        </div>
       </div>
     </div>
   );

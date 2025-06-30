@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import api from '../utils/axiosInstance';
+import Image from 'next/image';  // Import the Image component from Next.js
+import api from '../utils/axiosInstance';  // Assuming you have an axios instance set up
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState('');
@@ -17,12 +18,12 @@ export default function ForgotPassword() {
   };
 
   return (
-    <div className="min-h-screen bg-[url('/images/bg.jpg')] bg-cover bg-center flex items-center justify-center">
+    <div className="min-h-screen bg-blue-100 flex items-center justify-center">
       <form
         onSubmit={handleSubmit}
-        className="bg-white/5 backdrop-blur-md p-8 rounded-xl shadow-lg w-96 space-y-4"
+        className="bg-white p-8 rounded-xl shadow-md w-full max-w-md space-y-4"
       >
-        <h2 className="text-2xl font-semibold text-center text-white">Forgot Password</h2>
+        <h2 className="text-2xl font-semibold text-center text-blue-500">Forgot Password</h2>
 
         {sent ? (
           <p className="text-green-400 text-center">✅ Reset link sent! Check your email.</p>
@@ -33,12 +34,12 @@ export default function ForgotPassword() {
               placeholder="Your email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-4 py-2 border border-white/40 rounded-md bg-white/5 text-white placeholder-white/70 focus:outline-none"
+              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-800"
               required
             />
             <button
               type="submit"
-              className="w-full py-2 bg-white/30 text-white font-semibold rounded-md hover:bg-white/50"
+              className="w-full py-2 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 transition"
             >
               Send Reset Link
             </button>
@@ -46,6 +47,5 @@ export default function ForgotPassword() {
         )}
       </form>
     </div>
-
   );
 }

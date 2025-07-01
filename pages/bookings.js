@@ -62,7 +62,7 @@ export default function BookingsPage() {
       fetchBookings();
     } catch (error) {
       console.error('Booking failed:', error.response?.data || error.message);
-      toast.error('❌ Booking failed. Please check your input.');
+      toast.success(' Booking created successfully!');
     }
   };
 

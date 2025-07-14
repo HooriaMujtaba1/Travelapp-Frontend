@@ -55,17 +55,21 @@ export default function ListingDetail() {
           )}
 
           <div className="space-y-4 mb-6">
-            {listing.images?.map((img) => (
-              <Image
-                key={img.id}
-                src={img.image}
-                alt={listing.name}
-                width={500}  // Set an appropriate width
-                height={300} // Set an appropriate height
-                className="w-full h-60 object-cover rounded"
-              />
-            ))}
+            {listing.images?.length > 0 ? (
+              listing.images.map((img) => (
+                <img
+                  key={img.id}
+                  src={img.image} // Full image URL from your backend
+                  alt={listing.name}
+                  className="w-full h-60 object-cover rounded"
+                  loading="lazy"
+                />
+              ))
+            ) : (
+              <p className="text-gray-500 italic">No images available</p>
+            )}
           </div>
+
 
           <p className="text-gray-700 leading-relaxed">
             A tour place, also known as a tourist attraction, is a location that people

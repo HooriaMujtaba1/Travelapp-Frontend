@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { getAllListings } from '../services/listing';
-import Image from 'next/image';  // Import the Image component from Next.js
-import Link from 'next/link';    // Import Link for client-side routing
+import Link from 'next/link';
 
 export default function Home() {
   const [listings, setListings] = useState([]);
@@ -21,8 +20,11 @@ export default function Home() {
       });
   }, []);
 
-  if (loading) return <p className="p-8 text-center text-gray-600">Loading listings…</p>;
-  if (error) return <p className="p-8 text-center text-red-500">{error}</p>;
+  if (loading)
+    return <p className="p-8 text-center text-gray-600">Loading listings…</p>;
+
+  if (error)
+    return <p className="p-8 text-center text-red-500">{error}</p>;
 
   return (
     <div className="min-h-screen bg-blue-100 p-8 text-gray-800">
@@ -39,24 +41,23 @@ export default function Home() {
             key={item.id}
             className="bg-white rounded-lg overflow-hidden shadow-md border border-gray-200"
           >
-            {/* Use Next.js Image component for optimization */}
+            {/* Use plain <img> instead of Next.js <Image> */}
             {item.images?.[0] && (
-              <Image
+              <img
                 src={item.images[0].image}
                 alt={item.name}
-                width={500}  // Set an appropriate width
-                height={300} // Set an appropriate height
                 className="w-full h-48 object-cover"
+                loading="lazy"
               />
             )}
+
             <div className="p-4">
-              <h2 className="text-xl font-semibold text-blue-600 mb-2">{item.name}</h2>
+              <h2 className="text-xl font-semibold text-blue-600 mb-2">
+                {item.name}
+              </h2>
+
               <p className="text-gray-700 mb-4">
-                {item.description?.slice(0, 100)} A tour place, also known as a tourist attraction, is a location that people
-            visit for leisure, recreation, or cultural experiences. These places can be
-            natural wonders like mountains, beaches, or forests, or they can be
-            historical sites, cultural landmarks, or entertainment venues. 
-             {/* Truncate the description */}
+                {item.description?.slice(0, 100)} A tour place, also known as a tourist attraction, is a location that people visit for leisure, recreation, or cultural experiences. These places can be natural wonders like mountains, beaches, or forests, or they can be historical sites, cultural landmarks, or entertainment venues.
               </p>
 
               <div className="flex flex-wrap gap-2">

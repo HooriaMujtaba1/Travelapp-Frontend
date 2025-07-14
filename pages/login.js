@@ -2,23 +2,39 @@ import { useState } from 'react';
 import { login } from '../services/auth';
 import { useRouter } from 'next/router';
 import Cookies from 'js-cookie';
-import Link from 'next/link'; // Import Link for internal navigation
+import Link from 'next/link';
+import { useEffect } from 'react';
 
 export default function LoginPage() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const router = useRouter();
 
+  useEffect(() => {
+    if (Cookies.get('accessToken')) {
+      router.push('/');
+    }
+  }, []);
+
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const { access } = await login({ username, password });
+      const { access, refresh } = await login({ username, password });
+
+      // ✅ Store tokens
+      localStorage.setItem('access', access);
+      localStorage.setItem('refresh', refresh);
       Cookies.set('accessToken', access, { expires: 1 });
+
+      console.log('✅ Access Token:', access);
+      console.log('✅ Refresh Token:', refresh);
+
       alert('✅ Login successful');
       router.push('/');
     } catch (err) {
-      console.error(err.response?.data || err);
-      alert('🚫 ' + JSON.stringify(err.response?.data));
+      console.error('🚫 Login error:', err.response?.data || err.message);
+      alert('🚫 ' + JSON.stringify(err.response?.data || err.message));
     }
   };
 
@@ -55,7 +71,6 @@ export default function LoginPage() {
           Sign In
         </button>
 
-        {/* Forgot password link using Link component from Next.js */}
         <div className="text-right">
           <Link href="/forgot-password" className="text-sm text-blue-500 hover:underline">
             Forgot password?

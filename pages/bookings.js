@@ -1,70 +1,101 @@
 import { useEffect, useState } from 'react';
 import { getAllBookings, createBooking } from '@/services/booking';
+import { getAllListings } from '@/services/listing';
 import toast, { Toaster } from 'react-hot-toast';
 
 export default function BookingsPage() {
   const [bookings, setBookings] = useState([]);
+  const [listings, setListings] = useState([]);
   const [loading, setLoading] = useState(true);
+
   const [locationName, setLocationName] = useState('');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
 
   useEffect(() => {
     fetchBookings();
+    fetchListings();
   }, []);
 
-  const fetchBookings = () => {
-    getAllBookings()
-      .then((data) => {
-        setBookings(data);
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error('Error fetching bookings:', error);
-        toast.error('Failed to load bookings');
-        setLoading(false);
-      });
+  const fetchBookings = async () => {
+    try {
+      const data = await getAllBookings();
+      setBookings(data);
+    } catch (error) {
+      console.error('Error fetching bookings:', error);
+      toast.error('❌ Failed to load bookings');
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const fetchListings = async () => {
+    try {
+      const data = await getAllListings();
+      setListings(data);
+    } catch (error) {
+      console.error('Error fetching listings:', error);
+      toast.error('❌ Failed to load listings');
+    }
+  };
 
-    const isOverlap = (start1, end1, start2, end2) => {
-      return new Date(start1) <= new Date(end2) && new Date(end1) >= new Date(start2);
-    };
+  const isOverlap = (start1, end1, start2, end2) => {
+    return new Date(start1) <= new Date(end2) && new Date(end1) >= new Date(start2);
+  };const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    const conflictingBooking = bookings.find((booking) => {
-      const existingLocation =
-        booking.location_name || booking.listing_details?.name || '';
+  if (!locationName || !startDate || !endDate) {
+    toast.error('❌ Please fill all fields');
+    return;
+  }
 
-      return (
-        existingLocation.toLowerCase() === locationName.toLowerCase() &&
-        isOverlap(startDate, endDate, booking.start_date, booking.end_date)
-      );
+  if (new Date(startDate) > new Date(endDate)) {
+    toast.error('❌ Start date must be before end date');
+    return;
+  }
+
+  // ✅ Find listing from listings array instead of bookings
+  const matchedListing = listings.find(
+    (listing) => listing.name.toLowerCase() === locationName.toLowerCase()
+  );
+
+  if (!matchedListing) {
+    toast.error('❌ Listing not found. Please enter a valid listing name.');
+    return;
+  }
+
+  const listingId = matchedListing.id;
+
+  // ✅ Check overlapping bookings for the same listing
+  const conflict = bookings.find((booking) =>
+    booking.listing_details?.id === listingId &&
+    new Date(startDate) <= new Date(booking.end_date) &&
+    new Date(endDate) >= new Date(booking.start_date)
+  );
+
+  if (conflict) {
+    toast.error('❌ This listing is already booked for the selected dates.');
+    return;
+  }
+
+  try {
+    await createBooking({
+      listing_id: listingId,
+      start_date: startDate,
+      end_date: endDate,
     });
 
-    if (conflictingBooking) {
-      toast.error('❌ This location is already booked for the selected dates.');
-      return;
-    }
+    toast.success('✅ Booking created successfully!');
+    setLocationName('');
+    setStartDate('');
+    setEndDate('');
+    fetchBookings();
+  } catch (error) {
+    console.error('Booking failed:', error.response?.data || error.message);
+    toast.error('❌ Booking failed: ' + JSON.stringify(error.response?.data || error.message));
+  }
+};
 
-    try {
-      await createBooking({
-        location_name: locationName,
-        start_date: startDate,
-        end_date: endDate,
-      });
-
-      toast.success('✅ Booking created successfully!');
-      setLocationName('');
-      setStartDate('');
-      setEndDate('');
-      fetchBookings();
-    } catch (error) {
-      console.error('Booking failed:', error.response?.data || error.message);
-      toast.success(' Booking created successfully!');
-    }
-  };
 
   return (
     <div className="p-8 min-h-screen bg-blue-100 text-gray-800">
@@ -81,22 +112,30 @@ export default function BookingsPage() {
         onSubmit={handleSubmit}
         className="max-w-xl mx-auto mb-12 bg-white p-6 rounded-lg shadow-md space-y-4"
       >
-        <h2 className="text-2xl font-semibold text-center text-blue-500">📝 Book a New Listing</h2>
-        <input
-          type="text"
-          placeholder="Location Name"
+        <h2 className="text-2xl font-semibold text-center text-blue-500">
+          📝 Book a New Listing
+        </h2>
+
+        <select
           value={locationName}
           onChange={(e) => setLocationName(e.target.value)}
           required
-          className="w-full px-4 py-2 border border-gray-300 rounded-md text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
+          className="w-full px-4 py-2 border border-gray-300 rounded-md text-gray-800 focus:ring-2 focus:ring-blue-500"
+        >
+          <option value="">Select a listing</option>
+          {listings.map((l) => (
+            <option key={l.id} value={l.name}>
+              {l.name}
+            </option>
+          ))}
+        </select>
 
         <input
           type="date"
           value={startDate}
           onChange={(e) => setStartDate(e.target.value)}
           required
-          className="w-full px-4 py-2 border border-gray-300 rounded-md text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
         />
 
         <input
@@ -104,7 +143,7 @@ export default function BookingsPage() {
           value={endDate}
           onChange={(e) => setEndDate(e.target.value)}
           required
-          className="w-full px-4 py-2 border border-gray-300 rounded-md text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
         />
 
         <button
@@ -125,19 +164,23 @@ export default function BookingsPage() {
           {bookings.map((booking) => (
             <div
               key={booking.id}
-              className="bg-white text-gray-800 rounded-lg shadow border border-gray-200 p-6 space-y-2"
+              className="bg-white rounded-lg shadow border border-gray-200 p-6 space-y-2"
             >
               <h2 className="text-xl font-semibold">
-                {booking.listing_details?.name || 'Listing Name'}
+                {booking.listing_details?.name || booking.location_name || 'Listing Name'}
               </h2>
-              <a
-                href={booking.listing_details?.location_url || '#'}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-blue-500 hover:underline"
-              >
-                📍 View booked location in map
-              </a>
+
+              {booking.listing_details?.location_url && (
+                <a
+                  href={booking.listing_details.location_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-500 hover:underline"
+                >
+                  📍 View booked location in map
+                </a>
+              )}
+
               <p className="text-sm text-gray-600">📅 From: {booking.start_date}</p>
               <p className="text-sm text-gray-600">📅 To: {booking.end_date}</p>
               <p className="text-sm text-gray-500">

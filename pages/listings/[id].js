@@ -3,8 +3,7 @@ import { useEffect, useState } from 'react';
 import { getListingById } from '../../services/listing';
 import { getAllBookings } from '@/services/booking';
 import { toast } from 'react-toastify';
-import Image from 'next/image';  // Import the Image component from Next.js
-import Link from 'next/link';    // Import Link for internal navigation
+import Link from 'next/link';
 
 export default function ListingDetail() {
   const router = useRouter();
@@ -63,16 +62,21 @@ export default function ListingDetail() {
           </Link>
 
           <div className="space-y-4 mb-6">
-            {listing.images?.map((img) => (
-              <Image
-                key={img.id}
-                src={img.image}
-                alt={listing.name}
-                width={500}  // Adjust width based on your design
-                height={300} // Adjust height based on your design
-                className="w-full h-60 object-cover rounded"
-              />
-            ))}
+            {listing.images?.length > 0 ? (
+              listing.images.map((img) => (
+                <img
+                  key={img.id}
+                  src={img.image}
+                  alt={listing.name}
+                  width={500}
+                  height={300}
+                  loading="lazy"
+                  className="w-full h-60 object-cover rounded"
+                />
+              ))
+            ) : (
+              <p className="text-gray-500 italic">No images available</p>
+            )}
           </div>
 
           <p className="text-gray-700 leading-relaxed">
@@ -81,13 +85,7 @@ export default function ListingDetail() {
             natural wonders like mountains, beaches, or forests, or they can be
             historical sites, cultural landmarks, or entertainment venues. The purpose of
             a tour place is to provide an engaging and enjoyable experience for visitors,
-            offering opportunities for sightseeing, exploration, and relaxation. A tour place, also known as a tourist attraction, is a location that people
-            visit for leisure, recreation, or cultural experiences. These places can be
-            natural wonders like mountains, beaches, or forests, or they can be
-            historical sites, cultural landmarks, or entertainment venues. The purpose of
-            a tour place is to provide an engaging and enjoyable experience for visitors,
             offering opportunities for sightseeing, exploration, and relaxation.
-          
           </p>
         </div>
       </div>

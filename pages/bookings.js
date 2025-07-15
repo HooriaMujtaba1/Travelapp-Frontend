@@ -39,80 +39,78 @@ export default function BookingsPage() {
     }
   };
 
-  const isOverlap = (start1, end1, start2, end2) => {
-    return new Date(start1) <= new Date(end2) && new Date(end1) >= new Date(start2);
-  };const handleSubmit = async (e) => {
-  e.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-  if (!locationName || !startDate || !endDate) {
-    toast.error('❌ Please fill all fields');
-    return;
-  }
+    if (!locationName || !startDate || !endDate) {
+      toast.error('❌ Please fill all fields');
+      return;
+    }
 
-  if (new Date(startDate) > new Date(endDate)) {
-    toast.error('❌ Start date must be before end date');
-    return;
-  }
+    if (new Date(startDate) > new Date(endDate)) {
+      toast.error('❌ Start date must be before end date');
+      return;
+    }
 
-  // ✅ Find listing from listings array instead of bookings
-  const matchedListing = listings.find(
-    (listing) => listing.name.toLowerCase() === locationName.toLowerCase()
-  );
+    const matchedListing = listings.find(
+      (listing) => listing.name.toLowerCase() === locationName.toLowerCase()
+    );
 
-  if (!matchedListing) {
-    toast.error('❌ Listing not found. Please enter a valid listing name.');
-    return;
-  }
+    if (!matchedListing) {
+      toast.error('❌ Listing not found. Please enter a valid listing name.');
+      return;
+    }
 
-  const listingId = matchedListing.id;
+    const listingId = matchedListing.id;
 
-  // ✅ Check overlapping bookings for the same listing
-  const conflict = bookings.find((booking) =>
-    booking.listing_details?.id === listingId &&
-    new Date(startDate) <= new Date(booking.end_date) &&
-    new Date(endDate) >= new Date(booking.start_date)
-  );
+    const conflict = bookings.find(
+      (booking) =>
+        booking.listing_details?.id === listingId &&
+        new Date(startDate) <= new Date(booking.end_date) &&
+        new Date(endDate) >= new Date(booking.start_date)
+    );
 
-  if (conflict) {
-    toast.error('❌ This listing is already booked for the selected dates.');
-    return;
-  }
+    if (conflict) {
+      toast.error('❌ This listing is already booked for the selected dates.');
+      return;
+    }
 
-  try {
-    await createBooking({
-      listing_id: listingId,
-      start_date: startDate,
-      end_date: endDate,
-    });
+    try {
+      await createBooking({
+        listing_id: listingId,
+        start_date: startDate,
+        end_date: endDate,
+      });
 
-    toast.success('✅ Booking created successfully!');
-    setLocationName('');
-    setStartDate('');
-    setEndDate('');
-    fetchBookings();
-  } catch (error) {
-    console.error('Booking failed:', error.response?.data || error.message);
-    toast.error('❌ Booking failed: ' + JSON.stringify(error.response?.data || error.message));
-  }
-};
-
+      toast.success('✅ Booking created successfully!');
+      setLocationName('');
+      setStartDate('');
+      setEndDate('');
+      fetchBookings();
+    } catch (error) {
+      console.error('Booking failed:', error.response?.data || error.message);
+      toast.error('❌ Booking failed: ' + JSON.stringify(error.response?.data || error.message));
+    }
+  };
 
   return (
-    <div className="p-8 min-h-screen bg-blue-100 text-gray-800">
+    <div className="min-h-screen bg-blue-100 p-4 sm:p-6 lg:p-12 text-gray-800">
       <Toaster position="top-right" />
 
       {/* Header */}
-      <section className="mb-12 text-center">
-        <h1 className="text-4xl font-bold text-blue-600">Your Bookings</h1>
-        <p className="mt-2 text-gray-600">Track and create your travel plans</p>
+      <section className="mb-10 text-center">
+        <h1 className="text-3xl sm:text-4xl font-bold text-blue-600">Your Bookings</h1>
+        <p className="mt-2 text-gray-600 text-sm sm:text-base">
+          Track and create your travel plans
+        </p>
       </section>
 
       {/* Booking Form */}
       <form
         onSubmit={handleSubmit}
-        className="max-w-xl mx-auto mb-12 bg-white p-6 rounded-lg shadow-md space-y-4"
+        className="max-w-2xl mx-auto mb-12 bg-white p-6 sm:p-8 rounded-lg shadow-md space-y-4"
       >
-        <h2 className="text-2xl font-semibold text-center text-blue-500">
+        <h2 className="text-xl sm:text-2xl font-semibold text-center text-blue-500">
           📝 Book a New Listing
         </h2>
 
@@ -130,21 +128,23 @@ export default function BookingsPage() {
           ))}
         </select>
 
-        <input
-          type="date"
-          value={startDate}
-          onChange={(e) => setStartDate(e.target.value)}
-          required
-          className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
-        />
+        <div className="flex flex-col sm:flex-row sm:space-x-4 space-y-4 sm:space-y-0">
+          <input
+            type="date"
+            value={startDate}
+            onChange={(e) => setStartDate(e.target.value)}
+            required
+            className="flex-1 px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
+          />
 
-        <input
-          type="date"
-          value={endDate}
-          onChange={(e) => setEndDate(e.target.value)}
-          required
-          className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
-        />
+          <input
+            type="date"
+            value={endDate}
+            onChange={(e) => setEndDate(e.target.value)}
+            required
+            className="flex-1 px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
 
         <button
           type="submit"
@@ -166,7 +166,7 @@ export default function BookingsPage() {
               key={booking.id}
               className="bg-white rounded-lg shadow border border-gray-200 p-6 space-y-2"
             >
-              <h2 className="text-xl font-semibold">
+              <h2 className="text-lg font-semibold text-blue-700">
                 {booking.listing_details?.name || booking.location_name || 'Listing Name'}
               </h2>
 
@@ -175,7 +175,7 @@ export default function BookingsPage() {
                   href={booking.listing_details.location_url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-blue-500 hover:underline"
+                  className="text-blue-500 hover:underline text-sm"
                 >
                   📍 View booked location in map
                 </a>
@@ -183,7 +183,7 @@ export default function BookingsPage() {
 
               <p className="text-sm text-gray-600">📅 From: {booking.start_date}</p>
               <p className="text-sm text-gray-600">📅 To: {booking.end_date}</p>
-              <p className="text-sm text-gray-500">
+              <p className="text-xs text-gray-500">
                 🕒 Booked on: {new Date(booking.created_at).toLocaleString()}
               </p>
             </div>

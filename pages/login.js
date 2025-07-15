@@ -1,9 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { login } from '../services/auth';
 import { useRouter } from 'next/router';
 import Cookies from 'js-cookie';
 import Link from 'next/link';
-import { useEffect } from 'react';
 
 export default function LoginPage() {
   const [username, setUsername] = useState('');
@@ -16,13 +15,11 @@ export default function LoginPage() {
     }
   }, []);
 
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const { access, refresh } = await login({ username, password });
 
-      // ✅ Store tokens
       localStorage.setItem('access', access);
       localStorage.setItem('refresh', refresh);
       Cookies.set('accessToken', access, { expires: 1 });
@@ -39,12 +36,14 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-blue-100 flex items-center justify-center">
+    <div className="min-h-screen bg-blue-100 flex items-center justify-center px-4 py-8">
       <form
         onSubmit={handleSubmit}
-        className="bg-white p-8 rounded-xl shadow-md w-full max-w-md space-y-4"
+        className="bg-white w-full max-w-md rounded-xl shadow-md p-6 sm:p-8 space-y-4"
       >
-        <h2 className="text-2xl font-semibold text-center text-blue-500">Login</h2>
+        <h2 className="text-2xl sm:text-3xl font-semibold text-center text-blue-600">
+          Login
+        </h2>
 
         <input
           type="text"

@@ -1,6 +1,5 @@
 import { useState } from 'react';
-import Image from 'next/image';  // Import the Image component from Next.js
-import api from '../utils/axiosInstance';  // Assuming you have an axios instance set up
+import api from '../utils/axiosInstance';
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState('');
@@ -18,15 +17,19 @@ export default function ForgotPassword() {
   };
 
   return (
-    <div className="min-h-screen bg-blue-100 flex items-center justify-center">
+    <div className="min-h-screen bg-blue-100 flex items-center justify-center px-4 sm:px-6 lg:px-8">
       <form
         onSubmit={handleSubmit}
-        className="bg-white p-8 rounded-xl shadow-md w-full max-w-md space-y-4"
+        className="bg-white p-6 sm:p-8 rounded-xl shadow-md w-full max-w-sm sm:max-w-md space-y-4"
       >
-        <h2 className="text-2xl font-semibold text-center text-blue-500">Forgot Password</h2>
+        <h2 className="text-xl sm:text-2xl font-semibold text-center text-blue-500">
+          Forgot Password
+        </h2>
 
         {sent ? (
-          <p className="text-green-400 text-center">✅ Reset link sent! Check your email.</p>
+          <p className="text-green-500 text-center text-sm sm:text-base">
+            ✅ Reset link sent! Check your email.
+          </p>
         ) : (
           <>
             <input

@@ -34,12 +34,14 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen bg-blue-100 flex items-center justify-center">
+    <div className="min-h-screen bg-blue-100 flex items-center justify-center px-4 sm:px-6 lg:px-8">
       <form
         onSubmit={handleSubmit}
-        className="bg-white p-8 rounded-xl shadow-md w-full max-w-md space-y-4"
+        className="bg-white w-full max-w-md sm:rounded-xl rounded-lg shadow-md sm:p-8 p-6 space-y-4"
       >
-        <h2 className="text-2xl font-semibold text-center text-blue-500">Register</h2>
+        <h2 className="text-2xl font-semibold text-center text-blue-500">
+          Register
+        </h2>
 
         {[
           { name: 'username', type: 'text' },
@@ -53,12 +55,10 @@ export default function RegisterPage() {
             key={name}
             name={name}
             type={type}
-            placeholder={
-              name.replace('_', ' ').replace(/\b\w/g, (c) => c.toUpperCase())
-            }
+            placeholder={name.replace('_', ' ').replace(/\b\w/g, (c) => c.toUpperCase())}
             value={form[name]}
             onChange={handleChange}
-            className="w-full px-4 py-2 border border-gray-300 rounded-md text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-4 py-2 border border-gray-300 rounded-md text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
             required
           />
         ))}

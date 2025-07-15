@@ -48,19 +48,27 @@ export default function ListingDetail() {
     );
 
   return (
-    <div className="min-h-screen bg-blue-100 p-6 text-gray-800">
+    <div className="min-h-screen bg-blue-100 px-4 sm:px-6 lg:px-8 py-8 text-gray-800">
       <div className="max-w-4xl mx-auto space-y-6">
         {/* Listing Info */}
-        <div className="bg-white rounded-lg shadow-md border border-gray-200 p-6">
-          <h1 className="text-3xl font-bold mb-4 text-blue-600">{listing.name}</h1>
+        <div className="bg-white rounded-lg shadow-md border border-gray-200 p-6 sm:p-8">
+          <h1 className="text-2xl sm:text-3xl font-bold mb-4 text-blue-600">{listing.name}</h1>
 
-          {/* External Link to Google Maps */}
-          <Link href={listing.location_url} target="_blank" rel="noopener noreferrer">
-            <span className="text-blue-600 underline mb-6 inline-block">
+          {/* Google Maps Link */}
+          {listing.location_url ? (
+            <Link
+              href={listing.location_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-600 underline mb-4 inline-block text-sm sm:text-base"
+            >
               View on Google Maps
-            </span>
-          </Link>
+            </Link>
+          ) : (
+            <p className="text-sm text-red-500">Location URL not available</p>
+          )}
 
+          {/* Images */}
           <div className="space-y-4 mb-6">
             {listing.images?.length > 0 ? (
               listing.images.map((img) => (
@@ -68,10 +76,8 @@ export default function ListingDetail() {
                   key={img.id}
                   src={img.image}
                   alt={listing.name}
-                  width={500}
-                  height={300}
                   loading="lazy"
-                  className="w-full h-60 object-cover rounded"
+                  className="w-full h-52 sm:h-60 md:h-72 object-cover rounded-md"
                 />
               ))
             ) : (
@@ -79,7 +85,8 @@ export default function ListingDetail() {
             )}
           </div>
 
-          <p className="text-gray-700 leading-relaxed">
+          {/* Description */}
+          <p className="text-sm sm:text-base text-gray-700 leading-relaxed">
             A tour place, also known as a tourist attraction, is a location that people
             visit for leisure, recreation, or cultural experiences. These places can be
             natural wonders like mountains, beaches, or forests, or they can be

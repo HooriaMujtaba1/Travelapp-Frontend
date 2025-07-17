@@ -1,9 +1,9 @@
-// utils/axiosInstance.js
 import axios from 'axios';
 import Cookies from 'js-cookie';
 
+// Use environment variable for backend URL
 const api = axios.create({
-  baseURL: 'http://127.0.0.1:8000/api', // Update this if your base URL is different
+  baseURL: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api`,
   withCredentials: true,
 });
 

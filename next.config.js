@@ -1,16 +1,15 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Configuring image domains to allow images from localhost
   images: {
-    domains: ['localhost'], // Add any other domains you need for image optimization
+    domains: ['localhost', 'web-production-a6d4a.up.railway.app'],  // Added your production backend domain for images
   },
 
   // Rewrites for API requests to forward to the backend server
   async rewrites() {
     return [
       {
-        source: '/api/:path*',
-        destination: 'http://localhost:8000/api/:path*', // Forward to your local backend
+        source: '/api/:path*',  // For every request to /api/
+        destination: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/:path*`, // Use the backend URL from environment variables
       },
     ];
   },
